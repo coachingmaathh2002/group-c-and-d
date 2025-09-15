@@ -1,0 +1,2687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Statics & Dynamics Mock By Pijus Sir</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- MathJax (kept for any LaTeX you might add later) -->
+  <script>
+    window.MathJax = { tex: { inlineMath: [['$', '$'], ['\KATEX_INLINE_OPEN', '\KATEX_INLINE_CLOSE']] }, svg: { fontCache: 'global' } };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --bg: #0f172a; --panel: #111827; --card: #1f2937; --text: #e5e7eb; --muted: #9ca3af; --border: #374151;
+      --accent: #60a5fa; --ok: #10b981; --bad: #ef4444;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: linear-gradient(180deg, #0b1220, #0f172a); color: var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; line-height: 1.55; }
+    .container { max-width: 900px; margin: 2rem auto; padding: 1.25rem; }
+    .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; box-shadow: 0 12px 28px rgba(0,0,0,.35); }
+    header h1 { margin: 0 0 .3rem 0; font-size: clamp(1.25rem, 2.6vw, 1.8rem); }
+    header .sub { color: var(--muted); font-size: .95rem; margin-bottom: .75rem; }
+    .progress { display: flex; align-items: center; gap: .75rem; font-size: .95rem; color: var(--muted); margin: .5rem 0 1rem; }
+    .bar { flex: 1; height: 8px; background: #111827; border: 1px solid var(--border); border-radius: 999px; overflow: hidden; }
+    .bar > span { display: block; height: 100%; background: linear-gradient(90deg, #38bdf8, #6366f1); width: 0%; transition: width .25s ease; }
+    .status { font-weight: 600; color: var(--accent); }
+    .question-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 1rem; }
+    .q-head { display: flex; align-items: baseline; gap: .5rem; margin-bottom: .75rem; }
+    .q-num { background: #0b1220; color: #93c5fd; border: 1px solid var(--border); border-radius: 8px; padding: .2rem .5rem; font-weight: 700; font-size: .9rem; }
+    .q-text { font-size: 1.02rem; }
+    ul.choices { list-style: none; padding: 0; margin: .75rem 0 0; }
+    ul.choices li { margin: .4rem 0; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color .2s, background .2s; }
+    .choice-label { display: flex; align-items: flex-start; gap: .75rem; padding: .65rem .8rem; cursor: pointer; }
+    .choice-label:hover { background: rgba(255,255,255,.03); }
+    .choice-letter { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 999px; font-weight: 700;
+      color: #d1d5db; background: #0b1220; border: 1px solid var(--border); flex: 0 0 auto; margin-top: .1rem; }
+    .choice-text { flex: 1; }
+    input[type="radio"] { display: none; }
+    li.correct { border-color: var(--ok); background: rgba(16,185,129,.12); }
+    li.correct .choice-letter { background: var(--ok); color: #001b13; border-color: var(--ok); }
+    li.incorrect { border-color: var(--bad); background: rgba(239,68,68,.12); }
+    li.incorrect .choice-letter { background: var(--bad); color: #2b0000; border-color: var(--bad); }
+    .feedback { margin-top: .65rem; font-weight: 600; }
+    .feedback.ok { color: var(--ok); }
+    .feedback.bad { color: var(--bad); }
+    .note { font-size: .9rem; color: var(--muted); margin-top: .25rem; }
+    .actions { display: flex; gap: .5rem; align-items: center; justify-content: space-between; margin-top: 1rem; }
+    .btns { display: flex; gap: .5rem; }
+    button { appearance: none; border: 1px solid var(--border); background: #0b1220; color: var(--text); padding: .7rem 1rem; border-radius: 10px; cursor: pointer; font-weight: 700; }
+    button.primary { background: #2563eb; border-color: #1d4ed8; }
+    button.primary:disabled, button:disabled { opacity: .6; cursor: not-allowed; }
+    .tiny { color: var(--muted); font-size: .9rem; }
+    #resultPanel { display: none; }
+    .result-title { font-size: 1.25rem; font-weight: 800; margin: 0 0 .5rem 0; }
+    .result-hero { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; border: 1px solid var(--border); background: var(--card); border-radius: 12px; padding: 1rem; margin-top: .5rem; }
+    .big-score { display: grid; place-items: center; width: 96px; height: 96px; border-radius: 50%; background: #0b1220; border: 2px solid var(--border); font-size: 1.1rem; font-weight: 800; color: #93c5fd; }
+    .hero-text { font-size: 1rem; }
+    .hero-text .kpi { font-weight: 800; color: var(--accent); }
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .75rem; margin: 1rem 0; }
+    .stats .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: .85rem 1rem; }
+    .stats .value { font-size: 1.4rem; font-weight: 800; }
+    .stats .label { color: var(--muted); font-size: .9rem; }
+    .result-actions { display: flex; gap: .5rem; flex-wrap: wrap; }
+    @media (max-width: 640px) { .actions { flex-direction: column; align-items: stretch; gap: .75rem; } .btns { justify-content: space-between; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="panel">
+      <h1>Statics & Dynamics Mock By Pijus Sir</h1>
+      <div class="sub" id="subHead">Loading questions…</div>
+      <div class="progress">
+        <div id="progressText" class="status">Question 1</div>
+        <div class="bar" aria-hidden="true"><span id="progressBar"></span></div>
+      </div>
+    </header>
+
+    <main class="panel question-card" id="mainPanel">
+      <div class="q-head">
+        <div class="q-num" id="qNumber">Q1</div>
+        <div class="q-text" id="qText"></div>
+      </div>
+      <form id="choicesForm" aria-labelledby="qText">
+        <ul class="choices" id="choicesList"></ul>
+      </form>
+      <div id="feedback" class="feedback" aria-live="polite"></div>
+      <div id="note" class="note"></div>
+      <div class="actions">
+        <div class="btns">
+          <button id="backBtn" type="button">← Back</button>
+          <button id="checkBtn" class="primary" type="button">Check</button>
+          <button id="nextBtn" type="button">Next →</button>
+        </div>
+        <div class="tiny">Tip: Use ←/→ to navigate, Enter to check.</div>
+      </div>
+    </main>
+
+    <section id="resultPanel" class="panel">
+      <div class="result-title">Results</div>
+      <div class="result-hero">
+        <div class="big-score" id="scoreBadge">0%</div>
+        <div class="hero-text" id="heroText">You scored <span class="kpi" id="scoreCount">0/0</span>.</div>
+      </div>
+      <div class="stats">
+        <div class="card"><div class="value" id="statCorrect">0</div><div class="label">Correct</div></div>
+        <div class="card"><div class="value" id="statIncorrect">0</div><div class="label">Incorrect</div></div>
+        <div class="card"><div class="value" id="statUnanswered">0</div><div class="label">Unanswered</div></div>
+        <div class="card"><div class="value" id="statAttempted">0</div><div class="label">Attempted</div></div>
+      </div>
+      <div class="result-actions">
+        <button id="reviewBtn" type="button" class="primary">Review answers</button>
+        <button id="restartBtn" type="button">Start over</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- All 112 questions embedded as JSON (safe, no backticks issues) -->
+  <script type="application/json" id="data">
+[
+  {
+    "q": "If three forces, acting at a point, be in equilibrium, then each force is proportional to the sine of the angle between the other two. This theorem is called",
+    "options": ["Law of triangle of forces", "Law of parallelogram of forces", "Lami's theorem", "Trigonometrical theorem"],
+    "answer": 2
+  },
+  {
+    "q": "The resultant force of two forces P and Q is R. If Q is doubled, R is doubled and if Q is Reversed, R is again doubled. Then which one is the true relation?",
+    "options": ["$\\frac{P}{\\sqrt{2}}=\\frac{Q}{\\sqrt{3}}=\\frac{R}{\\sqrt{2}}$", "$\\frac{P}{1}=\\frac{Q}{2}=\\frac{R}{1}$", "$\\frac{P}{\\sqrt{3}}=\\frac{Q}{\\sqrt{2}}=\\frac{R}{\\sqrt{2}}$", "$\\frac{P}{1}=\\frac{Q}{1}=\\frac{R}{1}$"],
+    "answer": 0
+  },
+  {
+    "q": "A particle is projected in vertically upward direction. If after $t_1$ and $t_2$ time, its height is h, then h is equal to",
+    "options": ["$\\frac{1}{2}gt_1t_2$", "$gt_1t_2$", "$2g(t_1+t_2)$", "none of these"],
+    "answer": 0
+  },
+  {
+    "q": "If in any projectile maximum height is equal to horizontal range, then the angle of projection is",
+    "options": ["$\\tan^{-1}\\frac{1}{4}$", "$\\tan^{-1}\\frac{1}{2}$", "$\\tan^{-1}2$", "$\\tan^{-1}4$"],
+    "answer": 3
+  },
+  {
+    "q": "A particle is projected with velocity u at an inclination α with the horizontal. Then Maximum height (H) attained is",
+    "options": ["$\\frac{u^2 \\sin^2 \\alpha}{g}$", "$\\frac{2u^2 \\sin^2 \\alpha}{g}$", "$\\frac{u^2 \\sin^2 \\alpha}{2g}$", "$\\frac{u^2 \\sin 2\\alpha}{g}$"],
+    "answer": 2
+  },
+  {
+    "q": "A ball is thrown vertically upward with a given velocity. It reaches a maximum height 100m. If on second time its initial velocity is doubled then the ball will reach a maximum height of",
+    "options": ["100m", "150m", "200m", "400m"],
+    "answer": 3
+  },
+  {
+    "q": "A stone is projected horizontally with a velocity 9.8 m/s from a tower of height 100m. Its speed after 1 sec. of projection is (g=9.8m/s²)",
+    "options": ["9.8m/s", "4.9 m/s", "$9.8\\sqrt{2}$m/s", "None of the above"],
+    "answer": 2
+  },
+  {
+    "q": "If a body is acted upon by three forces and body is in equilibrium, then",
+    "options": ["All of them are parallel", "They meet at a point", "any two of them are parallel", "Either they are all parallel or they meet in a point"],
+    "answer": 3
+  },
+  {
+    "q": "Two projectiles are projected with same velocity but with angles of projection (45°-θ) and (45°+θ). Ratio of their horizontal range is",
+    "options": ["1:2", "1:3", "2:1", "1:1"],
+    "answer": 3
+  },
+  {
+    "q": "The Cartesion equation of a common catenary is",
+    "options": ["$y=c\\cos\\frac{x}{c}$", "$y=c\\sinh\\frac{x}{c}$", "$y=c\\tanh\\frac{x}{c}$", "$y=c\\cosh\\frac{x}{c}$"],
+    "answer": 3
+  },
+  {
+    "q": "The motion of a projectile is described by the equation y= ax-bx². Range of projectile is",
+    "options": ["a/b", "a/(2b)", "2a/b", "none of the above"],
+    "answer": 0
+  },
+  {
+    "q": "If two equal perfectly elastic bodies impinge directly then after impinge",
+    "options": ["Both interchange their velocities", "Both come to rest", "Velocities of both do not change", "None of the above"],
+    "answer": 0
+  },
+  {
+    "q": "The resultant of P and Q is R. If P is reversed and Q remaining the same the new resultant becomes R'. If R is perpendicular to R', then P:Q is",
+    "options": ["1:2", "1:1", "2:1", "2:3"],
+    "answer": 1
+  },
+  {
+    "q": "A stone is dropped in quiet lake and waves move in circles at the speed of 5 cms⁻¹. At the instant when the radius of the circular wave is 8 cm, how fast is the enclosed area increasing?",
+    "options": ["40π cm²s⁻¹", "80π cm²s⁻¹", "60π cm²s⁻¹", "None of these"],
+    "answer": 1
+  },
+  {
+    "q": "A particle at rest is on a smooth plane inclined at 30° to the horizontal. If the particle starts to slide, what will be its acceleration when the inclination of the plane is made 60°?",
+    "options": ["$\\frac{98}{10\\sqrt{3}}$ m/s²", "$\\frac{98}{\\sqrt{3}}$ m/s²", "$\\frac{49}{\\sqrt{3}}$ m/s²", "$\\frac{49}{10\\sqrt{3}}$ m/s²"],
+    "answer": 0
+  },
+  {
+    "q": "A particle is moving in a straight line according to the equation x = 4t³ + 2t + 5, where x is in meters and t is in seconds. What will be the average acceleration of the particle in the 4th second?",
+    "options": ["84 m/s²", "72 m/s²", "194 m/s²", "110 m/s²"],
+    "answer": 0
+  },
+  {
+    "q": "A particle moving with uniform acceleration covers 20 m and 60 m in the first and second seconds respectively. What was the initial velocity of the particle?",
+    "options": ["0", "5 m/s", "10 m/s", "15 m/s"],
+    "answer": 0
+  },
+  {
+    "q": "A body is projected with the same velocity at two different angles. If the ranges are the same in both cases and the times of flight are t and t', then R=",
+    "options": ["$\\frac{1}{2}tt'g$", "$\\frac{1}{4}tt'g$", "$tt'g$", "$\\frac{1}{8}tt'g$"],
+    "answer": 0
+  },
+  {
+    "q": "A particle moving with velocity V in a straight line follows the relation V² = 2S²+4S+5. What will be the acceleration of the particle at S = 5?",
+    "options": ["10", "12", "14", "15"],
+    "answer": 1
+  },
+  {
+    "q": "If the projection angle of a particle is 60° and the ratio of horizontal range to time of flight is 5:2, what is the projection velocity?",
+    "options": ["5", "10", "15", "इनमें से कोई नहीं (None of these)"],
+    "answer": 0
+  },
+  {
+    "q": "If for a common catenary, the tension at a point P is T, the tension at the lowest point C is T₀ and the weight of the arc CP is W, then",
+    "options": ["$T^2+T_0^2 = W^2$", "$T^2-T_0^2 = W^2$", "$T+T_0 = W$", "$T-T_0 = W$"],
+    "answer": 1
+  },
+  {
+    "q": "A particle moves with a constant velocity V, describing a cycloid with intrinsic equation $S = 4a \\sin \\Psi$. The acceleration of the particle is:",
+    "options": ["$\\frac{v^2}{4\\sqrt{a^2-S^2}}$", "$\\frac{v^2}{\\sqrt{16a^2+S^2}}$", "$\\frac{v^2}{4\\sqrt{a^2+S^2}}$", "$\\frac{v^2}{\\sqrt{16a^2-S^2}}$"],
+    "answer": 3
+  },
+  {
+    "q": "If A and B are moving with velocities u and v respectively in the same direction, then the relative velocity of B with respect to A is:",
+    "options": ["v-u", "u-v", "v+u", "$u^2+v^2$"],
+    "answer": 0
+  },
+  {
+    "q": "A particle is projected at an angle of 30° with the horizontal with a velocity of 2943 cm/s. The time of flight will be (g=981 cm/s²)",
+    "options": ["3/2 seconds", "3 seconds", "6 seconds", "12 seconds"],
+    "answer": 1
+  },
+  {
+    "q": "If a particle moves with constant speed along the curve $r = ae^{\\theta}$, then its acceleration will be proportional to?",
+    "options": ["$r^2$", "r", "1/r", "$1/r^2$"],
+    "answer": 1
+  },
+  {
+    "q": "The distance of the centre of gravity of a thin hemispherical shell of radius a from its centre is",
+    "options": ["(2/3)a", "(1/2)a", "(3/4)a", "(1/3)a"],
+    "answer": 1
+  },
+  {
+    "q": "The path of a projectile in vacuum will be",
+    "options": ["a circle", "an ellipse", "a parabola", "a hyperbola"],
+    "answer": 2
+  },
+  {
+    "q": "A particle is projected with velocity u in a direction making an angle of 45° with the horizontal. After what time will it be moving perpendicular to the direction of projection?",
+    "options": ["$\\frac{\\sqrt{2}u}{g}$", "$\\frac{u}{\\sqrt{2}g}$", "$\\frac{u}{g}$", "$\\frac{2u}{g}$"],
+    "answer": 0
+  },
+  {
+    "q": "The range of a projectile on horizontal plane is four times of its maximum height. Then angle of projection is",
+    "options": ["30°", "45°", "60°", "90°"],
+    "answer": 1
+  },
+  {
+    "q": "If two equal and perfect elastic spheres impinge then their velocities in the direction of centre of line are",
+    "options": ["Interchangeable", "equal", "doubled", "None of these"],
+    "answer": 0
+  },
+  {
+    "q": "A particle is in equilibrium under three forces, two of the forces act at right angles to one another, one being double the other. Third force has a magnitude of 10 Newtons. Other two have magnitude",
+    "options": ["$\\sqrt{10}, 2\\sqrt{10}$", "$\\sqrt{20}, 2\\sqrt{20}$", "10, 20", "None of these"],
+    "answer": 1
+  },
+  {
+    "q": "For the catenary $y = c \\cosh(\\frac{x}{c})$",
+    "options": ["$s^2=c^2+y^2$", "$y = c \\tan\\Psi$", "$s=c\\sinh(\\frac{x}{c})$", "$s=c \\sec\\Psi$"],
+    "answer": 2
+  },
+  {
+    "q": "The frequencies of the values 0, 1, 2, 3, ...,n of a variable are given by $q^n, ^nC_1q^{n-1}p, ^nC_2q^{n-2}p^2, ..., p^n$ then the mean of the variable will be (where p+q = 1)",
+    "options": ["nq", "np", "n(p+1)", "n(q-1)"],
+    "answer": 1
+  },
+  {
+    "q": "A ship moving at a velocity of 12 km/hour towards north observes, another ship which is 10 km east of this ship and moving with velocity of 16km/hour towards west. After some time they are at the minimum distance from each other. What is the minimum distance between them at this time?",
+    "options": ["$2\\sqrt{61}$km", "8km", "6km", "4km"],
+    "answer": 2
+  },
+  {
+    "q": "The horsepower of an engine which lifts 300 kg water per second from the depth of 100 metre is",
+    "options": ["300", "350", "380", "None of these"],
+    "answer": 3
+  },
+  {
+    "q": "A stone falls from the rest from some height and reaches the earth in 5 seconds. If after 3 seconds of fall the stone is stopped and again allowed to fall, then how much time will it take to reach the ground?",
+    "options": ["3sec", "4sec", "4.5 sec", "None of these"],
+    "answer": 1
+  },
+  {
+    "q": "The extremities of a heavy string of length 2l and weight 2lw, are attached to two small rings which can slide on a fixed wire. Each of these rings is acted on by a horizontal force equal to lw. The distance between the rings is",
+    "options": ["$2l\\log(1-\\sqrt{2})$", "$2l\\log(1+\\sqrt{2})$", "$l\\log(1+\\sqrt{2})$", "$l\\log(1-\\sqrt{2})$"],
+    "answer": 2
+  },
+  {
+    "q": "The reverse effective forces acting on each particle of a body and the external forces of the system are",
+    "options": ["infinite", "in equilibrium", "equal to each other", "None of these"],
+    "answer": 1
+  },
+  {
+    "q": "Moment of inertia of an elliptic area of mass M and semi-axes a and b about diameter of length 2r is",
+    "options": ["$\\frac{1}{4}M \\frac{a^2 b^2}{r^2}$", "$\\frac{1}{2}M a b$", "$\\frac{1}{4}M a b$", "$\\frac{1}{2}M \\frac{a^2 b^2}{r^2}$"],
+    "answer": 0
+  },
+  {
+    "q": "The centre of gravity (C.G.) of a solid figure formed by revolving a quadrant of ellipse about its minor axis is",
+    "options": ["$\\bar{x} = 0, \\bar{y} = \\frac{3b}{8}$", "$\\bar{x} = \\frac{3a}{8}, \\bar{y} = 0$", "$\\bar{x} = \\frac{3a}{8}, \\bar{y} = \\frac{3b}{8}$", "$\\bar{x} = a, \\bar{y} = b$"],
+    "answer": 0
+  },
+  {
+    "q": "Three forces, P, Q and R act along the sides BC, CA and AB of a triangle ABC taken in order. If their resultant passes through the centroid of the triangle ABC, then",
+    "options": ["$\\frac{P}{a}+\\frac{Q}{b}+\\frac{R}{c}=0$", "$\\frac{R}{c}+\\frac{P}{a}=\\frac{Q}{b}$", "$\\frac{P}{a}=\\frac{Q}{b}=\\frac{R}{c}$", "None of these"],
+    "answer": 2
+  },
+  {
+    "q": "Moment of inertia of a solid sphere of mass m and radius a about its tangent is",
+    "options": ["$\\frac{7}{5}ma^2$", "$\\frac{2}{5}ma^2$", "$\\frac{5}{2}ma^2$", "$\\frac{2}{3}ma^2$"],
+    "answer": 0
+  },
+  {
+    "q": "If there forces P, Q and R act along the sides BC, AC and AB respectively of the triangle ABC and their resultant passes through the orthocenter of triangle, then",
+    "options": ["$\\frac{P}{\\cos A}+\\frac{Q}{\\cos B}+\\frac{R}{\\cos C}=0$", "$\\frac{P}{\\cos A}+\\frac{Q}{\\cos B}+\\frac{R}{\\cos C}=1$", "$\\frac{P}{\\cos A}=\\frac{Q}{\\cos B}=\\frac{R}{\\cos C}$", "None of these"],
+    "answer": 0
+  },
+  {
+    "q": "A particle is projected with a velocity u so that its range on a horizontal plane is twice the greatest height attained then the range is",
+    "options": ["$\\frac{u^2}{2g}$", "$\\frac{2u^2}{3g}$", "$\\frac{4u^2}{5g}$", "$\\frac{g}{2u^2}$"],
+    "answer": 2
+  },
+  {
+    "q": "A ball is dropped from a height h on a horizontal plane, bounces up and down and finally comes to rest. The total distance described is",
+    "options": ["∞", "2h", "$h(1+e^2)$", "$h\\frac{1+e^2}{1-e^2}$"],
+    "answer": 3
+  },
+  {
+    "q": "A uniform chain of length l is suspended from two points A and B in the same horizontal line. If the tension at A is twice that at the lowest point of the chain, then the span AB is",
+    "options": ["$\\frac{l}{\\sqrt{2}}\\log(1+\\sqrt{2})$", "$\\frac{l}{\\sqrt{3}}\\log(2+\\sqrt{3})$", "$\\frac{l}{\\sqrt{3}}\\log(2-\\sqrt{3})$", "$\\frac{l}{\\sqrt{3}}\\log(1-\\sqrt{2})$"],
+    "answer": 1
+  },
+  {
+    "q": "The moment of inertia of any triangular area ABC about a perpendicular to its plane through A is",
+    "options": ["$\\frac{M}{12}(3b^2+3c^2-a^2)$", "$\\frac{M}{12}(a^2+b^2+c^2)$", "$\\frac{M}{12}[a^2-b^2-c^2]$", "$\\frac{M}{12}[3a^2+3b^2+2c^2]$"],
+    "answer": 0
+  },
+  {
+    "q": "Time period for compound pendulum is",
+    "options": ["$T=\\sqrt{\\frac{h}{g}}$", "$T=2\\pi\\sqrt{\\frac{k}{gh}}$", "$T=2\\pi\\sqrt{\\frac{k^2}{gh}}$", "None of these"],
+    "answer": 3
+  },
+  {
+    "q": "If two equal and perfectly elastic spheres impacting at 90°, their directions after impact will still be at?",
+    "options": ["right angles", "at the same line", "at an angle of 180°", "None of these"],
+    "answer": 0
+  },
+  {
+    "q": "Two forces P and Q have a resultant R and the resolved part of R in the direction of P is of magnitude Q. The angle between the forces is",
+    "options": ["$2\\sin^{-1}\\sqrt{\\frac{P}{2Q}}$", "$2\\sin^{-1}\\sqrt{\\frac{P}{Q}}$", "$2\\sin^{-1}\\sqrt{\\frac{Q}{2P}}$", "$2\\sin^{-1}\\sqrt{\\frac{Q}{P}}$"],
+    "answer": 0
+  },
+  {
+    "q": "Two equal rods of weight W each and length 2a, are attached to each other with free joint, and are placed symmetrically on a fixed smooth sphere of radius r. If the inclination of each rod with the horizon is θ, then",
+    "options": ["$r \\tan^2 \\theta - r \\tan \\theta = a$", "$r \\tan^2 \\theta + r \\tan \\theta = a$", "$r \\tan^3 \\theta + r \\tan \\theta = a$", "$r \\tan^3 \\theta - r \\tan \\theta = a$"],
+    "answer": 2
+  },
+  {
+    "q": "If (x,y) be a point of catenary whose intrinsic equation is s=c tan φ, then the value of secφ-tanφ is",
+    "options": ["$e^{x/c}$", "$e^{-x/c}$", "$e^{y/c}$", "$e^{-y/c}$"],
+    "answer": 1
+  },
+  {
+    "q": "The x-coordinate of the centre of gravity of an arc bounded by x=a and x= b is given by",
+    "options": ["$\\bar{x} = \\frac{\\int_{x=a}^{x=b} ydx}{\\int_{x=a}^{x=b} dx}$", "$\\bar{x} = \\frac{\\int_{x=a}^{x=b} ydx}{\\int_{x=a}^{x=b} ds}$", "$\\bar{x} = \\frac{\\int_{x=a}^{x=b} yds}{\\int_{x=a}^{x=b} ds}$", "None of these"],
+    "answer": 2
+  },
+  {
+    "q": "A spacecraft of mass M is moving with velocity v in free space when it explodes and breaks in two parts. After the explosion a mass m of the spacecraft is left stationary. The velocity of the other part is",
+    "options": ["$\\frac{Mv}{M-m}$", "$\\frac{Mv}{M+m}$", "$\\frac{mv}{M-m}$", "$\\frac{mv}{M+m}$"],
+    "answer": 0
+  },
+  {
+    "q": "A particle is projected with velocity u at an angle with the horizontal. The maximum height, it attains, will be",
+    "options": ["$\\frac{u^2 \\sin^2 a}{2g}$", "$\\frac{u \\sin 2a}{2g}$", "$\\frac{u^2 \\sin^2 a}{g}$", "$\\frac{u^2 \\sin 2a}{2g}$"],
+    "answer": 0
+  },
+  {
+    "q": "A ball is dropped from a height of 40m and rebounds to a height 20m. The loss of K.E, is",
+    "options": ["50%", "25%", "50%", "75%"],
+    "answer": 2
+  },
+  {
+    "q": "Moment of inertia of a uniform circular ring of radius 2a about an axis through the centre perpendicular to its plane (where m is its mass) is",
+    "options": ["$ma^2$", "$2ma^2$", "$3ma^2$", "$4ma^2$"],
+    "answer": 3
+  },
+  {
+    "q": "If particles are projected from the same point and in the same vertical plane so as to describe equal parabolas, then their vertices lie on",
+    "options": ["an ellipse", "a hyperbola", "a circle", "a parabola"],
+    "answer": 3
+  },
+  {
+    "q": "If the petrol burnt in driving a motor boat varies with the cube of its velocity, what will be the most economical speed when going against the current of 6km/hour?",
+    "options": ["8km/hour", "9km/hour", "12km/hour", "16km/hour"],
+    "answer": 1
+  },
+  {
+    "q": "The equation of catenary is",
+    "options": ["s = c secψ", "s = c sinh x/2", "s = c cosh x/2", "None of these"],
+    "answer": 3
+  },
+  {
+    "q": "The moment of inertia of a solid sphere of mass M and radius r about any diameter is",
+    "options": ["$\\frac{2}{3}Mr$", "$\\frac{2}{5}Mr^2$", "$\\frac{3}{5}Mr^3$", "$\\frac{1}{5}Mr^2$"],
+    "answer": 1
+  },
+  {
+    "q": "A stone with a velocity of 9.8 metre/sec is projected veritically upwards. At which height will the potential energy and kinetic energy of the stone by equal?",
+    "options": ["2.43 metres", "2.40 metres", "2.45 metres", "None of these"],
+    "answer": 2
+  },
+  {
+    "q": "Particles each of equal weight are placed at (n - 1) corners of a regular polygon of n sides. If the radius of the circumcircle of the regular polygon is r units, then the distance of the centre of gravity of these particles from the centre of the circumcircle of regular polygon will be",
+    "options": ["$\\frac{r}{2(n-1)}$", "$\\frac{r}{n+1}$", "$\\frac{r}{n-1}$", "$\\frac{r}{2(n+1)}$"],
+    "answer": 2
+  },
+  {
+    "q": "The statement, \"if three concurrent force in a plane are in equilibrium, then each force is proportional to the sine of the angle between the other two,\" is know as",
+    "options": ["law of triangle of forces", "law of parallelogram of forces", "Converse of Lami's theorem", "None of the above"],
+    "answer": 3
+  },
+  {
+    "q": "A uniform cubical box of edge a is placed on the top of a fixed sphere, the centre of the face of the cube being in contact with the highest point of the sphere. The least radius of the sphere, for which the equilibrium will be stable, is",
+    "options": ["a", "a/2", "2a", "3a/2"],
+    "answer": 1
+  },
+  {
+    "q": "A train of mass 200 tons, including the engine, is drawn up an incline of 3 in 500 at the rate of 40 km per hour by an engine of 600 H.P. The resistance per ton due to friction etc is",
+    "options": ["24.685 pounds-weight", "20.236 pounds-weight", "16.685 pounds-weight", "14.685 pounds-weight"],
+    "answer": 0
+  },
+  {
+    "q": "At what angle α smooth ball strike a horizontal plane so that after impact its direction may be right angle to its former path",
+    "options": ["$\\tan^{-1}\\frac{1}{\\sqrt{e}}$", "$\\tan^{-1}\\sqrt{e}$", "$\\sin^{-1}\\frac{1}{\\sqrt{e}}$", "$\\sin^{-1}\\sqrt{e}$"],
+    "answer": 1
+  },
+  {
+    "q": "A force $\\sqrt{5}$ units act along the line (x-3)/2=(y-4)/(-1), the moment of the force about the point (4,1) along z-axis is:",
+    "options": ["0", "$5\\sqrt{5}$", "$-\\sqrt{5}$", "5"],
+    "answer": 1
+  },
+  {
+    "q": "A uniform rod of weight W and length 2l is resting in a smooth spherical bowl of radius r. The rod is inclined to the horizontal at an angle of:",
+    "options": ["0", "$\\frac{\\pi}{4}$", "$\\tan^{-1}(\\frac{l}{r})$", "$\\tan^{-1}\\frac{l}{\\sqrt{r^2-l^2}}$"],
+    "answer": 0
+  },
+  {
+    "q": "A body consists of a solid cylinder with radius 'a' and height 'a' together with a solid hemisphere of radius 'a' placed on the base of the cylinder. The centre of gravity of the complete body is:",
+    "options": ["inside the cylinder", "inside the hemisphere", "on the interface between the two", "outside both"],
+    "answer": 2
+  },
+  {
+    "q": "A body is thrown vertically upward with a velocity of V metres/minute. The greatest height attained by the body will be:",
+    "options": ["$\\frac{V}{g}$ metres", "$\\frac{V^2}{g}$ metres", "$\\frac{V^2}{g}$ metres", "$\\frac{V^2}{2g}$ metres"],
+    "answer": 3
+  },
+  {
+    "q": "AB is a vertical diameter of a circle and PQ is a diameter inclined at an angle θ to AB. The value of θ, so that the time of sliding down PQ may be $\\sqrt{2}$ times that of sliding down AB is:",
+    "options": ["$\\frac{\\pi}{3}$", "$\\frac{\\pi}{4}$", "$\\frac{\\pi}{6}$", "None of these"],
+    "answer": 1
+  },
+  {
+    "q": "Two balls are projected respectively from the same point in directions inclined at 60° and 30° to the horizontal. If they attain the same height, the ratio of their velocities of projection is:",
+    "options": ["$\\sqrt{3}:1$", "$1:\\sqrt{3}$", "1:1", "1:2"],
+    "answer": 1
+  },
+  {
+    "q": "A ball is dropped from a height h on a horizontal plane and the coefficient of restitution for the impact is e, the velocity with which the ball rebounds from the floor is:",
+    "options": ["eh", "egh", "$e\\sqrt{gh}$", "$e\\sqrt{2gh}$"],
+    "answer": 3
+  },
+  {
+    "q": "An elastic ball with coefficient of elasticity $\\frac{1}{2}$ is dropped from rest at a height h on a smooth floor. The total distance covered by the ball is:",
+    "options": ["more than 2h", "less than 2h but more than $\\frac{3}{2}h$", "less than $\\frac{3}{2}h$ but more than $\\frac{4}{3}h$", "less than $\\frac{4}{3}h$"],
+    "answer": 1
+  },
+  {
+    "q": "Two bodies of masses m and 4m are moving with equal momentum. The ratio of their kinetic energy is:",
+    "options": ["1:4", "4:1", "1:1", "1:2"],
+    "answer": 1
+  },
+  {
+    "q": "A bullet of mass 'm' penetrates a thickness 'a' of a plate of mass 'M' at rest. If this plate is free to move, then the thickness to which the bullet will penetrate is :",
+    "options": ["$\\frac{Ma}{(m+M)}$", "$\\frac{ma}{(m+M)}$", "$\\frac{(M-m)a}{(m+M)}$", "None of these"],
+    "answer": 0
+  },
+  {
+    "q": "The directions of three forces 1N, 2N and 3N acting at a point are parallel to the sides of equilateral triangle, taken in order. The magnitude of their resultant is:",
+    "options": ["Zero", "$\\sqrt{\\frac{3}{2}}N$", "$\\frac{3}{2}N$", "$\\sqrt{3}N$"],
+    "answer": 3
+  },
+  {
+    "q": "P and Q (P>Q) are like parallel forces. If P is moved parallel to itself through a distance x, then the resultant of P and Q moves through a distance:",
+    "options": ["$\\frac{P \\times x}{(P+Q)}$", "$\\frac{P \\times x}{(P-Q)}$", "$\\frac{P \\times x}{(P+2Q)}$", "None of these"],
+    "answer": 0
+  },
+  {
+    "q": "A particle is projected vertically upward with velocity u is observed to be at a height h after times $t_1$ and $t_2$ seconds. Then h is:",
+    "options": ["$\\frac{1}{2}gt_1t_2$", "$\\frac{1}{2}g(t_1+t_2)$", "$\\frac{1}{2}g(t_1-t_2)$", "None of these"],
+    "answer": 0
+  },
+  {
+    "q": "ABC is a uniform triangular lamina with centre of gravity G. If the portion GBC is removed, the centre of gravity of the remaining portion is G' then GG' is equal to:",
+    "options": ["$\\frac{1}{6}AG$", "$\\frac{1}{4}AG$", "$\\frac{1}{3}AG$", "$\\frac{1}{2}AG$"],
+    "answer": 2
+  },
+  {
+    "q": "Two ball are projected respectively from the same point direction inclined at 60° and 30° to the horizontal. If they attain the same height, the ratio of their velocities of projection is:",
+    "options": ["1:2", "1:1", "$\\sqrt{3}:1$", "$1:\\sqrt{3}$"],
+    "answer": 3
+  },
+  {
+    "q": "A particle is moving in a straight line with uniform acceleration f and initial velocity u. The distance described by particle in the 2nd second is:",
+    "options": ["u+f", "$u+\\frac{3}{2}f$", "$u+\\frac{1}{2}f$", "u+3f"],
+    "answer": 1
+  },
+  {
+    "q": "The value in horizontal and vertical direction the resolved part of a force of 16kg-wt acting in a direction making an angle of 60° with the horizontal is:",
+    "options": ["8kg.wt, 10 kg. wt.", "10kg. wt, 8 kg. wt.", "8kg. wt, $8\\sqrt{3}$ kg.wt.", "None of these"],
+    "answer": 2
+  },
+  {
+    "q": "A constant force acting on a body of mass 20g, produce in it a velocity of 27 cm/sec in 6 sec. If the body starts from rest, then the magnitude of force is:",
+    "options": ["90 dynes", "20 dynes", "2 dynes", "50 dynes"],
+    "answer": 0
+  },
+  {
+    "q": "A Force which when acting on a mass 54 kg will move it 8 km in one minute, the value of force is:",
+    "options": ["432N", "40N", "300N", "240N"],
+    "answer": 3
+  },
+  {
+    "q": "The eq\" of the curve for which the polar subtangent is constant is :",
+    "options": ["r(a+θ)=0", "rθ+c = 0", "r²+aθ=0", "r(θ+c) +a = 0"],
+    "answer": 3
+  },
+  {
+    "q": "The radius of a wire is decreased to its one-third. If its volume remains the same, then its length will increase",
+    "options": ["3 times", "6 times", "9 times", "27 times"],
+    "answer": 2
+  },
+  {
+    "q": "$\\sqrt{\\frac{3}{2}}\\sqrt{1-\\frac{3}{2}}$ =",
+    "options": ["$\\frac{4\\pi}{3}$", "$\\frac{3\\pi}{4}$", "$\\frac{4\\sqrt{\\pi}}{3}$", "$\\frac{3\\sqrt{\\pi}}{4}$"],
+    "answer": 0
+  },
+  {
+    "q": "If the maximum and minimum value of the resultant of two forces are 40 units and 20 units respectively, then the magnitude of both forces are",
+    "options": ["30, 10 unit", "25, 15 unit", "50, 10 unit", "35, 15 unit"],
+    "answer": 0
+  },
+  {
+    "q": "The resultant of two equal forces inclined at an angle α is half of resultant when they are inclined at the angle β, then",
+    "options": ["cosα= 2cosβ", "cosβ = 2cosα", "cos α/2= 2 cosβ/2", "cos β/2 = 2 cosa/2"],
+    "answer": 3
+  },
+  {
+    "q": "Horizontal range of a projectile is 30 units and it acquires maximum height at 10 units, the angle of projection α is given by",
+    "options": ["$9(\\sin^2 \\alpha+1)= 25 (\\tan \\alpha-1)^2$", "$9(\\sin^2 \\alpha+1)= 25 (\\tan \\alpha+1)^2$", "$25(\\sin^2 \\alpha+1)= 9 (\\tan \\alpha+1)^2$", "$25(\\sin^2 \\alpha+1)= 9 (\\tan \\alpha-1)^2$"],
+    "answer": 2
+  },
+  {
+    "q": "The radius of curvature of the curve p = a sinψcosψ is",
+    "options": ["p", "2p", "3p", "4p"],
+    "answer": 2
+  },
+  {
+    "q": "If $\\frac{P}{2}=\\frac{Q}{3}=\\frac{R}{4}$, where R is the resultant of two forces P and Q acting at a point, then the angle between R and P is",
+    "options": ["$\\tan^{-1}(\\frac{12}{11})$", "$\\tan^{-1}(\\frac{3\\sqrt{15}}{11})$", "$\\tan^{-1}(\\frac{\\sqrt{15}}{11})$", "$\\tan^{-1}(\\frac{3}{11})$"],
+    "answer": 1
+  },
+  {
+    "q": "If µ is the coefficient of friction of a rough surface, then which of the following is true ?",
+    "options": ["$-1 \\le \\mu \\le 1$", "$-\\infty < \\mu < \\infty$", "$0 < \\mu \\le 1$", "$0 \\le \\mu \\le 1$"],
+    "answer": 3
+  },
+  {
+    "q": "Which of the following forces should not be omitted in equation of virtual work ?",
+    "options": ["The tension of an inelastic string.", "The thrust of a rod.", "Mutual reaction between two bodies at their point of contact.", "The reaction of nay smooth surface."],
+    "answer": 1
+  },
+  {
+    "q": "If the radial and transversal velocities of a particle are always proportional to each other, then the path of the particle is-",
+    "options": ["Parabola", "Circle", "Equiangular spiral", "Hyperbola"],
+    "answer": 2
+  },
+  {
+    "q": "If a particle moves along a straight line according to $s=\\frac{t^3}{3}-5t^2+9t+17$, then its velocity will be negative when",
+    "options": ["1 < t < 9", "1 > t > 9", "1 < t ≤ 9", "1 ≤ t < 9"],
+    "answer": 0
+  },
+  {
+    "q": "A light elastic string of natural length l and modulus of elasticity λ is hung by one end and to the other if a particle of mass m is tied, then the equation of the motion of the particle is",
+    "options": ["$\\frac{d^2x}{dt^2} = -\\frac{m\\lambda}{l}x$", "$\\frac{d^2x}{dt^2} = -\\frac{\\lambda}{ml}x$", "$\\frac{d^2x}{dt^2} = -\\frac{l}{m\\lambda}x$", "$\\frac{d^2x}{dt^2} = -\\frac{ml}{\\lambda}x$"],
+    "answer": 1
+  },
+  {
+    "q": "A particle is projected in a direction making an angle α with the horizon, its horizontal range is R. If it passes through the point (p,q) then tanα is equal to",
+    "options": ["$\\frac{q}{p} \\frac{R}{R-p}$", "$\\frac{q}{p} = \\frac{R}{R-p}$", "$\\frac{p}{q} \\frac{R}{R-q}$", "$\\frac{q}{p} = \\frac{R}{R-q}$"],
+    "answer": 0
+  },
+  {
+    "q": "The angular elevation of an enemy's position on a hill h metre high from a cannon is β. In order to shell it, the initial velocity u of the projectile must satisfy the condition.",
+    "options": ["$u < \\sqrt{gh(1+\\csc\\beta)}$", "$u < \\sqrt{gh(1-\\csc\\beta)}$", "$u \\ge \\sqrt{gh(1+\\csc\\beta)}$", "$u > \\sqrt{gh(1+\\csc\\beta)}$"],
+    "answer": 2
+  },
+  {
+    "q": "Any covariant tensor of second order can be expressed uniquely as the",
+    "options": ["Sum of two symmetric tensors of order two.", "Sum of two skew-symmetric tensors of order two.", "Sum of a symmetric tensor and a skew-symmetric tensor of order two.", "Difference of two symmetric tensors of order two."],
+    "answer": 2
+  },
+  {
+    "q": "The resultant of two forces P and Q acting at an angle θ is equal to $(2m+1)\\sqrt{P^2+Q^2}$ and when they act at an angle $(90° - \\theta)$, the resultant is $(2m-1)\\sqrt{P^2+Q^2}$, then tan θ =",
+    "options": ["$\\frac{2m}{1+m^2}$", "$\\frac{2m}{1-m^2}$", "$\\frac{1-m^2}{1+m^2}$", "$\\frac{m-1}{m+1}$"],
+    "answer": 3
+  },
+  {
+    "q": "If a body be on the point of sliding down an inclined rough plane under its own weight, then the inclination of the plane is-",
+    "options": ["equal to angle of friction", "greater than angle of friction", "less than angle of friction", "equal to twice the angle of friction"],
+    "answer": 0
+  },
+  {
+    "q": "If any body is constrained to turn round a point then the virtual work of the reaction at the point is always-",
+    "options": ["zero", "positive", "negative", "constant other than zero"],
+    "answer": 0
+  },
+{
+    "q": "If a heavy string hangs over two fixed small pegs such that the two ends are free and the central portion is in the form of a catenary, then the free ends of the string will lie-",
+    "options": [
+      "above the vertex of the catenary",
+      "on the tangent at vertex of the catenary",
+      "on the directrix of the catenary",
+      "none of the above"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "If the radial and transverse velocities of a particle are always proportional to each other. Then its path is the curve-",
+    "options": [
+      "circle",
+      "parabola",
+      "ellipse",
+      "equiangular spiral"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "With usual notations, the tangential acceleration of a moving particle is-",
+    "options": [
+      "only dv/dt",
+      "only d²s/dt²",
+      "only v dv/ds",
+      "all of the above"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "A particle moving with simple harmonic motion has a period T, then the time taken to move from the position of maximum displacement to one in which the displacement is half the amplitude, is-",
+    "options": [
+      "T/6",
+      "T/2",
+      "T/3",
+      "(2/3)T"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "A particle starts from rest at infinity and falls under gravitational force 'g' on the surface of the earth of radius 'r', then its velocity at the earth surface is-",
+    "options": [
+      "√gr",
+      "√2gr",
+      "√3gr",
+      "2√gr"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "A particle starts from rest at a distance 'a' from the centre of force which attracts inversely as the distance, if µ is proportional coefficient, then the time of arriving at centre is-",
+    "options": [
+      "(a/√(2µ))π",
+      "(a/√µ)π",
+      "a√(π/2µ)",
+      "a√(π/3µ)"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "The tension in the elastic string is-",
+    "options": [
+      "proportional to length of string.",
+      "proportional to increase in length of string.",
+      "proportional to increase in unit length of string.",
+      "proportional to square of increase in length of string"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "A particle is projected with a velocity 2√gh so that it just clears two walls of equal height 'h', which are at a distance 2h from each other. Then the time of passing between the walls is-",
+    "options": [
+      "2√(h/g)",
+      "√(h/g)",
+      "2√(g/h)",
+      "√(h/g)"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "A particle is projected with the velocity 'u' at an angle of projection 'α' then the highest height attained is-",
+    "options": [
+      "u sinα / g",
+      "u² sin²α / 2g",
+      "u² sin 2α / g",
+      "u² sin 2α / 2g"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "If 'L' is Laplace transform operator and 's' is parameter then L{cosh at} =",
+    "options": [
+      "a / (s²-a²)",
+      "s / (s²-a²)",
+      "a / (s²+a²)",
+      "s / (s²+a²)"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "If Jn(x) represents the Besel function, then the true relation is-",
+    "options": [
+      "xJ'n(x) = nJn(x) + xJn+1(x)",
+      "2J'n(x) - Jn+1(x) = Jn-1(x)",
+      "xJ'n(x) = -nJn(x) + xJn-1(x)",
+      "2nJn(x) = x[Jn-1(x) - Jn+1(x)]"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "A symmetric tensor of the second order has at most different components in a VN is-",
+    "options": [
+      "N(N+1)/2",
+      "N(N-1)/2",
+      "(N+1)(N+2)/2",
+      "(N-1)(N-2)/2"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "For a curve its curvature and torsion are in constant ratio, then the curve is-",
+    "options": [
+      "osculating sphere",
+      "osculating circle",
+      "circular helix",
+      "cylindrical helix"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "Let O be the circumcentre of triangle ABC. If three forces P, Q, R acting along OA, OB, OC are in equilibrium, then P : Q: R is equal to",
+    "options": [
+      "sin A : sin B : sin C",
+      "sin 2A : sin 2B : sin 2C",
+      "cos A : cos B : cos C",
+      "cos 2A : cos 2B : cos 2C"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "The forces P, Q, R are acting along sides BC, CA and AB of a triangle ABC. If their resultant passes through the incentre, then.",
+    "options": [
+      "P cos A + Q cos B + R cos C = 0",
+      "P + Q + R = 0",
+      "P sec A + Q sec B + R sec C = 0",
+      "P cosec A + Q cosec B + R cosec C = 0"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "A body of weight W on a rough inclined plane is in limiting equilibrium. If coefficient of friction is 1/√3, then the inclination of plane with horizontal is",
+    "options": [
+      "75°",
+      "60°",
+      "45°",
+      "30°"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "Which one of the following equations is the Cartesian equation of catenary?",
+    "options": [
+      "s = c tanΨ",
+      "y = c cosh(x/c)",
+      "s = y sinΨ",
+      "y = c sinh(x/c)"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "If a particle describes the curve r = ae^θ with constant angular velocity, then its radical acceleration is equal to",
+    "options": [
+      "r¨=0",
+      "2r¨=0",
+      "0",
+      "3r¨=0"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "If the tangential and normal components of acceleration of a moving particle be always equal, then the velocity varies as",
+    "options": [
+      "e^Ψ",
+      "e^(2Ψ)",
+      "e^(Ψ²)",
+      "e^(Ψ/2)"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "A particle executing simple harmonic motion has acceleration 8 cm/sec² when its distance 2 cm from the centre. The time period will be",
+    "options": [
+      "π/2 second",
+      "π second",
+      "1/π second",
+      "2/π second"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "A particle moving with simple harmonic motion has an amplitude a. Its distance from the centre where the velocity is half of the maximum velocity will be",
+    "options": [
+      "±a/3",
+      "±a/2",
+      "±a/√2",
+      "±a√3/2"
+    ],
+    "answer": 3
+  },
+
+  {
+    "q": "If a particle is projected from a fixed point with initial velocity u it at an angle α with the horizontal then horizontal range is",
+    "options": [
+      "$\\frac{u^2 \\sin 2\\alpha}{g}$",
+      "$\\frac{u \\sin \\alpha}{g}$",
+      "$\\frac{u^2 \\sin^2 \\alpha}{2g}$",
+      "$\\frac{u^2 \\sin \\alpha}{2g}$"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "Two particles A and B are dropped from heights of 5m and 20m respectively. The ratio of the times taken by A and B to reach the ground will be",
+    "options": [
+      "1:4",
+      "2:1",
+      "1:2",
+      "1:1"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "A person is standing in a lift which is moving upwards with an acceleration 'f'. The person will feel a weight of",
+    "options": [
+      "(f+g) times the actual weight",
+      "(f-g) times the actual weight",
+      "(fg) times the actual weight",
+      "(f/g) times the actual weight"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "A particle is projected at an angle of 45° with the horizontal with a velocity of 49√2 m/s. After how much time will it be in a direction perpendicular to the direction of projection?",
+    "options": [
+      "10√2 second",
+      "10 second",
+      "8 second",
+      "5 second"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "A particle starts from rest and moves with constant acceleration. The ratio of the increase in kinetic energy in the mth and (m+1)th second is",
+    "options": [
+      "m : m",
+      "(m+1) : (m-1)",
+      "2m-1 : 2m+1",
+      "None of these"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "Three forces are acting at a point on a plane. The angle between P and Q is 150° and between Q and R is 120°. In equilibrium, the ratio of forces P, Q, R will be",
+    "options": [
+      "1:2:3",
+      "1:2:√3",
+      "3:2:1",
+      "√3:2:1"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "The resultant of two equal forces is equal to either of them. The angle between the forces is",
+    "options": [
+      "45°",
+      "60°",
+      "90°",
+      "120°"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "The resultant of forces acting along the sides BC, CA and AB of a triangle ABC passes through the circumcentre of the triangle. Then",
+    "options": [
+      "P sinA + Q sinB + R sinC = 0",
+      "P cosA + Q cosB + R cosC = 0",
+      "P secA + Q secB + R secC = 0",
+      "P tanA + Q tanB + R tanC = 0"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "Two uniform spheres made of the same material, with radii of 6 cm and 3 cm respectively, are joined together. The distance of the center of gravity of the entire system from the center of the larger sphere will be",
+    "options": [
+      "1 cm",
+      "3 cm",
+      "2 cm",
+      "4 cm"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "If I is the incenter of ΔABC, and the lengths of the sides BC, CA, and AB are a, b, c respectively, then the value of aIA + bIB + cIC is",
+    "options": [
+      "0",
+      "AB",
+      "AC",
+      "AD"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "A body is free to slide on a smooth vertical circular wire and is connected by a string, equal in length to the radius of the circle, to the highest point of the circle. The tension T of the string equals:",
+    "options": [
+      "the weight of the body",
+      "one-third of the weight of the body",
+      "half of the weight of the body",
+      "double of the weight of the body"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "If a central orbit is the lemniscate of Bernoulli r² = a² cos 2θ, then the law of force is:",
+    "options": [
+      "$F \\propto \\frac{1}{r^4}$",
+      "$F \\propto \\frac{1}{r^5}$",
+      "$F \\propto \\frac{1}{r^7}$",
+      "$F \\propto \\frac{1}{r^9}$"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "A particle possesses two simple harmonic motions in perpendicular directions, having the same period, but differing in phase and amplitude. The particle describes:",
+    "options": [
+      "a circle",
+      "a parabola",
+      "an ellipse",
+      "a hyperbola"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "The chord of curvature, through the pole of the equiangular spiral r = ae^(mθ) is-",
+    "options": [
+      "2r",
+      "r",
+      "4r",
+      "3r"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "The equations of the inverted cycloid is-",
+    "options": [
+      "x = a(θ- cos θ), y = a(1-cos θ)",
+      "x = a(θ + sin θ), y = a(1-cos θ)",
+      "x = a(θ - sin θ), y = a(1-cos θ)",
+      "x = a(θ - sin θ), y = a(1 + cos θ)"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "The radial and transverse velocities of a particle are always proportional to each other, the path is-",
+    "options": [
+      "a cubic curve",
+      "an equiangular spiral",
+      "a catenary",
+      "none of these"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "A particle is projected with velocity u making an angle α with the horizontal. The maximum horizontal range is-",
+    "options": [
+      "$\\frac{u^2 \\sin \\alpha}{2g}$",
+      "$\\frac{u}{2g}$",
+      "$\\frac{2u}{g}$",
+      "$\\frac{u^2}{g}$"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "The coefficient of friction is equal to-",
+    "options": [
+      "sine of the angle of friction",
+      "cosine of the angle of friction",
+      "tangent of the angle of friction",
+      "cotangent of the angle of friction"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "The resultant of two forces P and Q is R, if Q is doubled, R is doubled; and if Q is reversed, R is again doubled. If the ratio P² : Q² : R² = 2 : 3 : x, then x is equal to–",
+    "options": [
+      "5",
+      "4",
+      "3",
+      "2"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "The equation of the line of action of the single resultant of a system of coplanar forces is-",
+    "options": [
+      "xY + yX = G",
+      "xY - yX = G",
+      "yX - xY = G",
+      "None of these"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "The distance from the base, of the central of gravity, of a solid right circular cone of uniform density and height 12cm is-",
+    "options": [
+      "2 cm",
+      "3 cm",
+      "4 cm",
+      "6 cm"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "If the reaction R = 5 Newton and the forced friction µR = 5√3/3 Newton then the angle of frictions is-",
+    "options": [
+      "π/2",
+      "π/3",
+      "π/4",
+      "π/6"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "The product of mass and acceleration is called:",
+    "options": [
+      "Momentum",
+      "Work",
+      "Force",
+      "Moment"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "If a particle moves in a plane curve r = f (θ) then the radial acceleration is equal to-",
+    "options": [
+      "$\\frac{d^2r}{dt^2} - r(\\frac{d\\theta}{dt})^2$",
+      "$\\frac{d^2r}{dt^2} - r^2(\\frac{d\\theta}{dt})$",
+      "$\\frac{d^2r}{dt^2} - r^{-1}(\\frac{d\\theta}{dt})$",
+      "$\\frac{d^2r}{dt^2} - r(\\frac{d^2\\theta}{dt^2})$"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "The moment of inertia of a hollow sphere about a diameter is:",
+    "options": [
+      "(1/3)Ma²",
+      "(4/3)Ma²",
+      "(2/3)Ma²",
+      "none of these"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "The maximum range, in a horizontal plane, of a projectile with a given velocity of projection is obtained if the angle of projection is-",
+    "options": [
+      "π/4",
+      "π/3",
+      "π/6",
+      "None of these"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "A particle moves in a curve so that its tangential and normal accelerations are equal. If the angular velocity of the tangent is constant, then the curve is :",
+    "options": [
+      "$ks = Ae^\\Psi + B$",
+      "$ks = Ae^{-\\Psi} + B$",
+      "$ks = A \\log \\Psi + B$",
+      "None of these"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "A particle coming from infinity will reach the earth's surface with velocity :",
+    "options": [
+      "√3gr",
+      "√5gr",
+      "√gr",
+      "√2gr"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "Let a particle of 1kg be projected vertically with velocity U in a resisting medium. If it goes up to a height h and then returns to the point of projection with velocity V, then:",
+    "options": [
+      "V > U",
+      "V = U",
+      "V < U",
+      "V² = U² - 2gh"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "When a particle is in motion under a force f, then :",
+    "options": [
+      "its velocity may be in any direction",
+      "its acceleration may be in any direction",
+      "its acceleration is always in the direction of motion",
+      "its acceleration is in the direction of f"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "Two satellites of masses m₁ and m₂ (m₁>m₂) are revolving round the earth in circular orbits of radii r₁ and r₂ (r₁>r₂) respectively and speeds v₁ and v₂ respectively, then :",
+    "options": [
+      "v₁ = v₂",
+      "v₁ > v₂",
+      "v₁ < v₂",
+      "None of these"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "The effect of the resistance of a medium on the range of a particle, is :",
+    "options": [
+      "To increase it",
+      "To decrease it",
+      "No effect",
+      "None of these"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "Two equal uniform rods AB and AC each of length 2b are freely and rest on a smooth vertical circle of radius a, if 2θ be the angle between them, then :",
+    "options": [
+      "$b\\sin^3\\theta = a\\cos\\theta$",
+      "$a\\sin^3\\theta = b\\cos\\theta$",
+      "$b\\cos^3\\theta = a\\sin\\theta$",
+      "None of these"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "A particle is projected vertically upwards with a velocity u and resistance of the medium is kv². The velocity V with which the particle will return to the point of projection, is given by :",
+    "options": [
+      "$\\frac{1}{V^2} = \\frac{1}{u^2} - \\frac{k}{g}$",
+      "$\\frac{1}{u^2} = \\frac{1}{V^2} - \\frac{k}{g}$",
+      "$\\frac{1}{V^2} = \\frac{1}{u^2} + \\frac{k}{g}$",
+      "None of these"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "A particle rests under the attraction of two centres of forces, which attract directly as distance, their intensities being µ and µ'. The particle is slightly displaced towards, one of them, then the time of small oscillation is:",
+    "options": [
+      "$\\frac{2\\pi}{(\\mu+\\mu')}$",
+      "$\\frac{\\pi}{\\sqrt{(\\mu+\\mu')}}$",
+      "$\\frac{2\\pi}{\\sqrt{\\mu+\\mu'}}$",
+      "None of these"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "The greatest least velocities of a certain planet in its orbit round the sun are 30 km/sec. and 29.2 km/sec respectively. Then the eccentricity of the orbit is-",
+    "options": [
+      "1/72",
+      "1/74",
+      "1/75",
+      "None of these"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "The curves, for which polar subnormal varies as the radius vector, are given by the following:",
+    "options": [
+      "r = k sin (θ + c)",
+      "r = k cos c θ",
+      "r = ce^(kθ)",
+      "None of these"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "A particle moves in a straight line under the equation of motion V(dv/dx) = -x where v is the velocity at a distance x, the motion is:",
+    "options": [
+      "periodic with period 2π",
+      "periodic with period π",
+      "periodic with period π/2",
+      "not periodic"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "A particle is projected in vaccum with the velocity 20 meters per second. The maximum range on the horizontal plane and the corresponding angle of projection are:",
+    "options": [
+      "200/g, π/4",
+      "200/g, π/3",
+      "400/g, π/4",
+      "400/g, π/3"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "For motion under a central force, the angular momentum is:",
+    "options": [
+      "a constant",
+      "increasing",
+      "decreasing",
+      "none of (a), (b), (c)"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "A particle moves in a straight line with initial velocity u and acceleration f in the direction of motion. The distance travelled in the third second is:",
+    "options": [
+      "u+4f",
+      "u+2f",
+      "u+7/2 f",
+      "u+5/2 f"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "If a projectile with a given initial velocity attains its maximum range on the horizontal plane, then the greatest heitht of the projectile is:",
+    "options": [
+      "1/2 the range",
+      "1/4 the range",
+      "1/3 the range",
+      "the same as the range"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "A uniform string of weight W is suspended from two points at the same level and a weight W' is attached to its lowest point. If the tangents at the highest and lowest points make angles π/3 and π/4 with the horizontal, then W/W' equals:",
+    "options": [
+      "√3-1",
+      "√3+1",
+      "√3",
+      "2"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "The moment of inertia about the x-axis of the ellipse disc given by x²/a² + y²/b² = 1 is:",
+    "options": [
+      "(1/2)Ma²",
+      "(1/4)Ma²",
+      "(1/4)Mb²",
+      "(1/2)Mb²"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "A body is moving in a straight line with uniform acceleration. It covers distances of 10 m and 12 m in third and fourth seconds respectively, then the initial velocity in m/sec is:",
+    "options": [
+      "1",
+      "3",
+      "5",
+      "7"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "The equation of the catenary is:",
+    "options": [
+      "s = c cos Ψ",
+      "s = c sec Ψ",
+      "s = c tan Ψ",
+      "none of these"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "A particle describes a circle under a central force directed to a point on its circumference. The law of force is inversely proportional to:",
+    "options": [
+      "the square of distance",
+      "the cube of distance",
+      "the fifth power of distance",
+      "none of these"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "A particle is dropped under gravity from rest from a height h and it travels a distance 9h/25 in the last second. The height h is (g = 9.8 m/sec²) :",
+    "options": [
+      "100 meter",
+      "122.5 meter",
+      "145 meter",
+      "167.5 meter"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "The tension at a point P of a common cantenary is 13 units and the tension at the lowest point A is 12 units. The weight of the arc AP is:",
+    "options": [
+      "5 units",
+      "6 units",
+      "7 units",
+      "√3 units"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "A particle moves along a circle of radius with velocity v and angular acceleration ω then the normal acceleration is given by:",
+    "options": [
+      "av²",
+      "av",
+      "aω",
+      "aω²"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "Two balls are projected respectively from the same point in directions inclined at 60° and 30° to the horizontal. If they attain the same height, the ratio of their velocities of projection is:",
+    "options": [
+      "√3:1",
+      "1:√3",
+      "1:1",
+      "1:2"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "A particle moves in a straight line with velocity u and constant acceleration f. The distance travelled in 4th second is:",
+    "options": [
+      "u+4f",
+      "u+5f",
+      "u+3f",
+      "u + (7/2)f"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "If the horizontal range of a projectile is 4√3 times its maximum height, then its angles of projection is:",
+    "options": [
+      "60°",
+      "45°",
+      "30°",
+      "none of the above"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "If T be the tension at any point B of a catenary and T₀ that at the lowest point A and W be the weight of the arc AB of the catenary. Then (T² - T₀²) is equal to:",
+    "options": [
+      "(1/2)W²",
+      "W²",
+      "2W²",
+      "none of the above"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "A particle possesses two simple harmonic motion in perpendicular directions, having the same period, but differing in phase and amplitude. The path of the particle is:",
+    "options": [
+      "a circle",
+      "an ellipse",
+      "a cycloid",
+      "a catenary"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "The moment of inertia of a rectangular lamina of mass M and sides 2a and 2b about a diagonal is:",
+    "options": [
+      "$M\\frac{a^2b^2}{3(a^2+b^2)}$",
+      "$M\\frac{2a^2b^2}{3(a^2+b^2)}$",
+      "$M\\frac{3a^2b^2}{2(a^2+b^2)}$",
+      "None of the above"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "The chord of curvature through the pole for the curve p = f(r) is:",
+    "options": [
+      "f(r)",
+      "f(r)/f'(r)",
+      "2f(r)/f'(r)",
+      "2f(r)f'(r)"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "The moment of inertia of the ellipse x²/a² + y²/b² = 1 of mass M about its major axis is-",
+    "options": [
+      "(1/2)Ma²",
+      "(1/2)Mb²",
+      "(1/4)Mb²",
+      "(1/4)Ma²"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "The ratio of the range on horizontal plane and the time of flight of a projectile whose angle of projection is 60° is 5:2. Its velocity of projection is-",
+    "options": [
+      "5",
+      "10",
+      "15",
+      "none of the above"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "If a particle describes a curve r = a(1+cosθ) under a central force F, then the law of forces is-",
+    "options": [
+      "$F \\propto \\frac{1}{r^2}$",
+      "$F \\propto \\frac{1}{r^3}$",
+      "$F \\propto \\frac{1}{r^4}$",
+      "$F \\propto r$"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "A heavy uniform string of length 10m is suspended between two points in the same horizontal line so that the sag in the middle is 1m. Its parameter c is-",
+    "options": [
+      "24m",
+      "25m",
+      "6m",
+      "12m"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "When a uniform inextensible chain hangs under gravity, the difference in the tensions at two points varies as-",
+    "options": [
+      "the difference of their heights",
+      "the difference of inclinations of tangents at these points",
+      "the horizontal distance between them",
+      "none of the above"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "If a particle moves along the curve r = ae^θ such that its radical acceleration is zero, then its angular velocity is-",
+    "options": [
+      "Proportional to 1/r",
+      "proportional to r",
+      "proportional to 1/r²",
+      "a constant"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "In a simple harmonic motion, if the velocities at distance b and c from the centre of force be respectively u and v, then the frequency n of oscillations satisfies :",
+    "options": [
+      "$4\\pi n^2 (b^2 – c^2) = v^2 – u^2$",
+      "$4\\pi^2 n^2 (b^2 – c^2) = v^2 – u^2$",
+      "$4\\pi^2 n (b^2 – c^2) = v^2 – u^2$",
+      "$4\\pi^2 n^2 (b – c) = v^2 – u^2$"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "A particle is projected so that its horizontal range is maximum. The ratio of its greatest height to its horizontal range, is-",
+    "options": [
+      "1/6",
+      "1/4",
+      "1/2",
+      "1"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "If a particle is moving in a parabolic orbit under a central acceleration µ/r², then the square of the velocity at a point is-",
+    "options": [
+      "greater then 2µ/r",
+      "less than 2µ/r",
+      "equal to 2µ/r",
+      "equal to µ/r²"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "A particle describes the curve p² = ar under a force F to the pole; the law of force is-",
+    "options": [
+      "$F \\propto \\frac{1}{r^4}$",
+      "$F \\propto \\frac{1}{r^3}$",
+      "$F \\propto \\frac{1}{r^5}$",
+      "$F \\propto \\frac{1}{r^2}$"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "The moment of inertia of a solid sphere of mass M and radius 'a' about a diameter is:",
+    "options": [
+      "(2/5)Ma²",
+      "(2/3)Ma²",
+      "(3/5)Ma²",
+      "(4/5)Ma²"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "If the pedal equation of a curve is pr=a², then the redius of curvature is-",
+    "options": [
+      "$r^3/a^2$",
+      "$r^2/a^2$",
+      "$r^2/a$",
+      "$r^3/a$"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "If a body of mass m kg is carried by a lift moving with upward acceleration f, then the pressure on the plane of the lift is:",
+    "options": [
+      "mg-mf",
+      "mf-mg",
+      "mg+mf",
+      "(mg)-(mf)"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "If a particle moves under a central force F along the curve r = ae^(mθ), then the law of force is:",
+    "options": [
+      "$F \\propto r^3$",
+      "$F \\propto r^{-5}$",
+      "$F \\propto r^{-3}$",
+      "$F \\propto r$"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "A particle moves along a parabola y = ax² in such a way that its x-component of velocity is constant. If ÿ is the acceleration in the y-direction, then:",
+    "options": [
+      "ÿ ∝ x²",
+      "ÿ ∝ x",
+      "ÿ ∝ y",
+      "ÿ = constant"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "Certesian formula for radius of curvature ρ for the curve y =f(x), is:",
+    "options": [
+      "$\\rho = \\frac{d^2y}{dx^2}$",
+      "$\\rho = (1+\\frac{dy}{dx})^{3/2}$",
+      "$\\rho = \\frac{(1+(\\frac{dy}{dx})^2)^{3/2}}{\\frac{d^2y}{dx^2}}$",
+      "$\\rho = \\frac{(1+\\frac{dy}{dx})^{3/2}}{\\frac{d^2y}{dx^2}}$"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "A particle is at rest at the origin. It moves along the X-axis with an acceleration x-x², where x is the distance of the particle from the origin at time t. The particle next comes to rest after it has covered a distance",
+    "options": [
+      "1",
+      "1/2",
+      "3/2",
+      "2"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "If a body is projected at such an angle that the horizontal range is four times the greatest height, then the angle of projection is:",
+    "options": [
+      "$\\tan^{-1}(1/4)$",
+      "$\\tan^{-1}(1/2)$",
+      "$\\tan^{-1}(1)$",
+      "$\\tan^{-1}(2)$"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "A particle is attracted by a force to a fixed point varying as (distance)⁻ⁿ. If the velocity acquired in falling from infinity to a distance a from the fixed point be equal to the velocity acquired in falling distance a to distance, a/4 then n is equal to:",
+    "options": [
+      "3",
+      "5/2",
+      "3/2",
+      "2"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "If the equation of path of a projectile is given by y=x-x², then the velocity of projection is:",
+    "options": [
+      "g/2",
+      "g/4",
+      "√2g",
+      "√g"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "If a particle describes the cardioid r=a(1+cosθ) under a central force to the pole, then the central acceleration is proportional to:",
+    "options": [
+      "1/r",
+      "1/r²",
+      "1/r³",
+      "1/r⁴"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "For common catenary, the tension at any point is proportional to:",
+    "options": [
+      "distance of the point from the axis",
+      "depth of the point form the line of span",
+      "the height of the point above the vertex",
+      "the height of the point above the directrix"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "Equations forming the parametric equation of a common catenary are:",
+    "options": [
+      "x = csecψ, y = clog(secψ + tanψ)",
+      "x = ctanψ, y = clog(secψ + tanψ)",
+      "x = clog(secψ + tanψ), y = csecψ",
+      "x = clog(secψ + tanψ), y = ctanψ"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "Moment of inertia of a rod of length 2a and mass M about an axis through an end perpendicular to the rod, is:",
+    "options": [
+      "(4/3)Ma²",
+      "(3/2)Ma²",
+      "Ma²",
+      "(2/3)Ma²"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "The product of the two times of hight from a point P to another point Q with a given velocity of projections is-",
+    "options": [
+      "PQ/g",
+      "2PQ/g",
+      "PQ/2g",
+      "3PQ/g"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "If the equation of a particle executing a simple harmonic motion is d²x/dt² + 16x = 0 then the frequency will be-",
+    "options": [
+      "2/π",
+      "π/2",
+      "8/π",
+      "π/8"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "Forces 3P, 7P and 5P act along the sides AB, BC and CA respectively of an equilateral triangle ABC of side 20 units. The resultant force at A makes an angle with side AB.",
+    "options": [
+      "150°",
+      "30°",
+      "90°",
+      "60°"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "Motion of a particle in a plane due to an acceleration P directed towards a fixed point in the plane is given (in usual notation) by-",
+    "options": [
+      "$\\frac{d^2u}{d\\theta^2} + u = \\frac{P}{h^2u^3}$",
+      "$\\frac{d^2u}{d\\theta^2} + u = \\frac{P}{h^2u^2}$",
+      "$u^2 + (\\frac{du}{d\\theta})^2 = \\frac{P}{h^2u^2}$",
+      "$\\frac{d^2u}{d\\theta^2} + u = \\frac{P}{h^2u^2}$"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "A weight W is attached to an endless string of length l which hangs over two smooth pags distant (1/3)l apart in a horizontal line. The pressure on each pag is-",
+    "options": [
+      "2W",
+      "(1/3)W",
+      "W",
+      "(1/2)W"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "At θ = π/6 the slope of the tangent to the cardioids r = a(1-cosθ) with the initial line is-",
+    "options": [
+      "1/√2",
+      "1",
+      "√2",
+      "∞"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "If a particle moving along a curve r = ae^θ with constant speed, then its acceleration will be proportional to",
+    "options": [
+      "1/r",
+      "r",
+      "r²",
+      "1/r²"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "A force P acting on a particle of mass 10 gm acting for 3 sec, generates a velocity of 9m/sec. The magnitude of P is",
+    "options": [
+      "0.3 N",
+      "300 dynes",
+      "3000 dynes",
+      "3 N"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "A particle is moving under the influence of a central force along the curve r = ae^(cotα)θ, then the force is proportional to",
+    "options": [
+      "r³",
+      "r²",
+      "1/r³",
+      "1/r²"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "Three equal and like forces act at the vertices of a triangle, then their resultant passes through",
+    "options": [
+      "centroid of the triangle",
+      "incentre of the triangle",
+      "circumcentre of the triangle",
+      "orthocentre of the triangle"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "If a system of coplanar forces be in equilibrium, the algebraic sum of their moments about any point in their plane, is",
+    "options": [
+      "non-zero",
+      "zero",
+      "a constant other then zero",
+      "none of the above"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "For the common catenary y = c cosh(x/c) the following relation holds:",
+    "options": [
+      "y = c tan Ψ",
+      "s = c secΨ",
+      "y² = c²+s²",
+      "T = (W/y)c"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "Consider a disc in the form of an ellipse x²/a² + y²/b² = 1. Then M = 4/(a²b²) whose M is the total mass of the disc, is the moment of inertia about the",
+    "options": [
+      "y-axis",
+      "x-axis",
+      "z-axis",
+      "given line"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "If µ is the coefficient of friction and λ is the angle of friction, then the relation between µ and λ is",
+    "options": [
+      "µ = sin λ",
+      "µ = cos λ",
+      "µ = tan λ",
+      "µ = cot λ"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "A body is in equilibrium on a rough inclined plane of which the coefficient of friction is 1/√3. The angle of inclination of the plane is gradually increased. The body will be on the point of sliding downward, when the inclination of the plane reaches",
+    "options": [
+      "15°",
+      "30°",
+      "45°",
+      "60°"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "The intrinsic equation of a common catenary is",
+    "options": [
+      "s = c sin Ψ",
+      "s = c cot Ψ",
+      "s = c sec Ψ",
+      "None of the above"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "The centre of gravity of a circular arc of a unit circle subtending an angle 60° at the centre, is at a distance from the centre",
+    "options": [
+      "3/π",
+      "2/π",
+      "6/π",
+      "3√3/π"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "The number of loops in r = a sin 5θ is",
+    "options": [
+      "1",
+      "3",
+      "4",
+      "5"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "If p be the perpendicular from the centre of force upon tangent to the path at any point whose distance is r from the origin the centre of force), then for u=1/r",
+    "options": [
+      "$\\frac{1}{p^2} = u^2 + (\\frac{du}{d\\theta})^2$",
+      "$p^2 = u^2 + (\\frac{du}{d\\theta})^2$",
+      "$\\frac{1}{p^2} = u + (\\frac{du}{d\\theta})^2$",
+      "$p^2 = u + (\\frac{du}{d\\theta})^2$"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "A particle is moving in a straight line and acceleration is proportional to the distance from a fixed point O in the straight line and is always away from O. Then the equation of motion for µ>0 is",
+    "options": [
+      "$d^2x/dt^2 = -µx^2$",
+      "$d^2x/dt^2 = -µx$",
+      "$d^2x/dt^2 = µx$",
+      "None of the above"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "A system of coplanar forces is acting on a rigid body. If X and Y are the algebraic sums of the resolved parts of forces along x and y axes, and G is algebraic sum of moments of forces about the origin, then the algebraic sum of moments of forces about a point (α, β) is",
+    "options": [
+      "G + αY + βX",
+      "G - αY - βX",
+      "G + αY - βX",
+      "G - αY + βX"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "A particle executing simple harmonic motion in a line requires the following time to move from the position of maximum displacement to one in which the displacement is half the amplitude.",
+    "options": [
+      "(1/5)th of the period",
+      "(1/4)th of the period",
+      "(1/8)th of the period",
+      "(1/6)th of the period"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "Two like parallel forces 3P and P are interchanged in position, the point of application of the resultant will be displaced by the distance",
+    "options": [
+      "AB",
+      "(1/2)AB",
+      "(1/4)AB",
+      "2AB"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "The moment of inertia of a thin uniform circular ring of radius a and mass M about a diameter is",
+    "options": [
+      "Ma²/2",
+      "Ma²/4",
+      "Ma²/3",
+      "Ma²"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "The angle φ between radius vector and tangent for a curve r = f(θ) is given by",
+    "options": [
+      "$\\tan\\phi = r\\frac{dr}{d\\theta}$",
+      "$\\tan\\phi = \\frac{1}{r}\\frac{dr}{d\\theta}$",
+      "$\\tan\\phi = r\\frac{d\\theta}{dr}$",
+      "$\\tan\\phi = r\\frac{d^2\\theta}{d\\theta^2}$"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "The orthogonal trajectory of the curve rⁿ sin nθ = aⁿ is",
+    "options": [
+      "rⁿ tan nθ = c",
+      "rⁿ cosec nθ = c",
+      "rⁿ cos nθ = c",
+      "None of the above"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "If the radial and transverse velocities of a particle are always proportional to each other, then the path of the particle is",
+    "options": [
+      "a parabola",
+      "an ellipse",
+      "a circle",
+      "an equiangular spiral"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "The path of a projectile in vacuum is a",
+    "options": [
+      "Circle",
+      "Straight line",
+      "Parabola",
+      "Ellipse"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "The Cartesian equation of the common catenary is",
+    "options": [
+      "y = cosh x",
+      "y = cosh(x/c)",
+      "y = c cosh(x/c)",
+      "None of the above"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "Two projectiles A and B are projected with same initial velocity making an angle α and 90°-α with the horizontal. The ratio of their ranges is",
+    "options": [
+      "1:1",
+      "tan²α:1",
+      "1:tan²α",
+      "1:√2"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "A plane is inclined at an angle tan⁻¹(3/4) to the horizon, A horizontal force of (1/2)W is required just to support a weight w on the plane. The coefficient of friction is-",
+    "options": [
+      "3/11",
+      "4/11",
+      "5/11",
+      "2/11"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "If a particle is at point (r,θ) at time t, then its transverse acceleration will be-",
+    "options": [
+      "$\\frac{d^2r}{dt^2} - r(\\frac{d\\theta}{dt})^2$",
+      "$\\frac{1}{r}\\frac{d}{dt}(r^2\\frac{d\\theta}{dt})$",
+      "$\\frac{dr}{dt}\\frac{d\\theta}{dt} + r\\frac{d^2\\theta}{dt^2}$",
+      "$\\frac{1}{2r}\\frac{d}{dt}(r^2\\frac{d\\theta}{dt})$"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "The centre of gravity of a uniform circular are subtending an angle 2α at the centre is-",
+    "options": [
+      "$(\\frac{a\\sin\\alpha}{\\alpha}, 0)$",
+      "$(0, \\frac{a\\sin\\alpha}{\\alpha})$",
+      "$(a\\frac{\\sin\\alpha}{\\alpha}, 0)$",
+      "$(0, a\\frac{\\sin\\alpha}{\\alpha})$"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "A particle describes a curve with uniform speed v. If acceleration at any point s be (v²c)/(s²+c²) and y = 0, when s = 0, then the intrinsic equation of the curve is-",
+    "options": [
+      "s² = c² + y²",
+      "s = c sin y",
+      "s = c tan y",
+      "c = s tan y"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "A bar AB of weight w rests like a ladder, with upper end A against a smooth vertical wall and lower end B on a rough horizontal plane. If the bar is just on the point of sliding, then the reaction at A is equal to (µ is coefficient of friction):",
+    "options": [
+      "µw",
+      "w",
+      "w/µ",
+      "µw/(1+µ²)"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "Two particles A and B are projected vertically upward with velocity v₁ and v₂ respectively. If v₁:v₂ = 2:5, then the ratio of the greatest heights attained by the particles is-",
+    "options": [
+      "25:4",
+      "3:4",
+      "4:3",
+      "4:25"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "The distance of the centre of gravity of a solid hemisphere of radius r from its centre is equal to-",
+    "options": [
+      "4r/(3π)",
+      "r/2",
+      "3r/8",
+      "5r/3"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "A ball is dropped from a height of 81 ft. and after striking the floor rebounce. It strikes the floor second time and then rebounce to a height of 16ft. The coefficient of restitution is (g = 32ft/sec²)-",
+    "options": [
+      "1/3",
+      "2/3",
+      "1/2",
+      "√2/3"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "If a man can throw a stone upto the 196 metre, what will be time of flight and maximum height of the stone ? (g = 9.8 metre/sec²)",
+    "options": [
+      "2√11 sec, 48 metre",
+      "2√10 sec, 49 metre",
+      "2√7 sec, 50 metre",
+      "2√11 sec, 50metre"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "A particle is moving with constant angular velocity ω along a path given by r = ae^(bθ), where a and b are constants. The radial acceleration of the particle is-",
+    "options": [
+      "b²ω²r + ω²r",
+      "ω²r - b²r",
+      "b²ω²r - ω²r",
+      "ω²r"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "A ball is projected at an angle of 30° with the horizontal with a velocity of 49 m/s. Its horizontal range will be-",
+    "options": [
+      "490√3 m",
+      "245√3 m",
+      "245√3/2 m",
+      "245√3/7 m"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "A gun of mass M has a bullet of mass m. The velocity of the bullet relative to the gun is u. The actual velocity of the bullet and the gun is:",
+    "options": [
+      "$\\frac{Mu}{M+m}, \\frac{mu}{M+m}$",
+      "$\\frac{(M+m)u}{M-m}, \\frac{(M-m)u}{M+m}$",
+      "$\\frac{Mu}{M+m}, \\frac{Mu}{M+u}$",
+      "$\\frac{(M+m)u}{M-m}, \\frac{(M+m)u}{M+m}$"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "If two forces P and Q are acting on a particle. and the angle between both forces is θ and the resultant is R. If the resolution of the resultant R in the direction of the force P is 2P, then,",
+    "options": [
+      "P = Q sec θ",
+      "P = Q sin θ",
+      "P = Q tan θ",
+      "P = Q cos θ"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "If P and Q are the horizontal and vertical components of forces acting on a particle, then their resultant force will be:",
+    "options": [
+      "P+Q",
+      "$\\sqrt{P^2+Q^2}$",
+      "P-Q",
+      "$\\sqrt{P^2-Q^2}$"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "The unit of power is",
+    "options": [
+      "Joule",
+      "Ohm",
+      "Watt",
+      "Volt"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "A 2 kg stone falls from rest. The work done by gravity in the 5th second of its fall is-",
+    "options": [
+      "864 Joule",
+      "864.36 Joule",
+      "648.36 Joule",
+      "486.36 Joule"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "The horizontal range of a projectile is three times its maximum height. If the projectile is projected with velocity u, then its time of flight will be",
+    "options": [
+      "8u/5g",
+      "4u/5g",
+      "2u/g",
+      "u/g"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "The square of the periodic time of a planet is proportional to:",
+    "options": [
+      "The major axis of its orbit",
+      "The square root of the major axis of its orbit",
+      "The cubic of the major axis of its, orbit",
+      "The cube root of the major axis of its orbit"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "If three forces, acting in one plane upon a rigid body, keep it in equilibrium, then they must:",
+    "options": [
+      "meet in a point",
+      "be parallel",
+      "be non- parallel",
+      "either meet in a point or be parallel"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "A particle is moving in a circle of radius r with uniform speed v. The angular velocity of the particle at any point P of its path, about the centre of the circle, is:",
+    "options": [
+      "v²/r",
+      "v/r",
+      "0",
+      "vr"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "A planet moves in an orbit of eccentricity 1/74 round the sum with greatest velocity 30 km/sec. It's least velocity is:",
+    "options": [
+      "29.2km/sec.",
+      "28.2 km/sec.",
+      "30.2km/sec.",
+      "39.2 km/sec."
+    ],
+    "answer": 0
+  },
+  {
+    "q": "The intrinsic equation of the semi-cubical parabola 3ay²= 2x³ is:",
+    "options": [
+      "$9s = 4a(\\sec^2 \\psi -1)$",
+      "$9s = 4a(\\sec^3 \\psi -1)$",
+      "$9s = 4a(\\sec\\psi-1)$",
+      "None of these"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "A heavy elastic string, whose natural length is 2πa, is placed round a smooth cone, whose axis is vertical and whose semi- vertical angle is α. If w be the weight and λ the modulus of elasticity of the string, then it will lie in equilibrium in the form of a circle of radius:",
+    "options": [
+      "$\\frac{wa}{2\\lambda\\pi}\\cot\\alpha$",
+      "$a(1+\\frac{w}{\\pi\\lambda}\\cot\\alpha)$",
+      "$a(1+\\frac{w}{2\\pi\\lambda}\\cot\\alpha)$",
+      "None of these"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "The force towards the pole, under which a particle is describing the curve rⁿ cos nθ=aⁿ is proportional to:",
+    "options": [
+      "r^(2n)",
+      "r^(2n-1)",
+      "r^(2n-2)",
+      "r^(2n-3)"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "The equation y = c cosh(x/c) where c is a constant, represents:",
+    "options": [
+      "Common catenary",
+      "Catenary of uniform strength",
+      "Cycloid",
+      "None of these"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "A horizontal shelf is moved up and down with S.H.M. of period 1/2 sec. The greatest amplitude admissible in order that a weight placed on the shelf may not be jerked off, is:",
+    "options": [
+      "g/4π²",
+      "g/8π²",
+      "g/16π²",
+      "None of these"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "Three equal coplanar forces of weight 10kg acting at a point. If their lines of action are making same angle, then resultant force is",
+    "options": [
+      "0",
+      "30kg",
+      "10kg",
+      "None of these"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "In a ΔABC, let ∠C = π/2. If r and R are the inradius and the circumradius respectively of the triangle, then 2(r+R) is equal to",
+    "options": [
+      "a+b",
+      "b+c",
+      "c+a",
+      "a+b+c"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "The resultant of two forces P and Q is R. If Q is doubled, R is also doubled and if the direction of Q is reversed, R is again doubled. If the ratio P:Q:R :: √2:√3:x then x is equal to",
+    "options": [
+      "√2",
+      "√3",
+      "√5",
+      "None of these"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "The distance s in cm traversed by a particle in t second is given by the equation s=4t³-5t+3. Then the velocity of the particle after 3 sec is",
+    "options": [
+      "100cm/sec",
+      "120cm/sec",
+      "103cm/sec",
+      "None of these"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "A stone is dropped into a well and the sound of the splash is hear 11.5 second later by the person who dropped the stone. If the velocity of the sound is 327m/s, then the approximate depth of the well in meters is",
+    "options": [
+      "372m",
+      "654m",
+      "490.5m",
+      "922m"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "A stone is thrown horizontally, with velocity √2gh from the top of a tower of height h. The distance where it will strike the level ground through the foot of the tower is",
+    "options": [
+      "h",
+      "2h",
+      "3h",
+      "None of these"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "A ball A moving with velocity u, impinges directly on an equal ball B moving with velocity v in the opposite direction. If the coefficient of elasticity is e and after the impact ball A comes to rest, then u/v =",
+    "options": [
+      "(1-e)/(1+e)",
+      "(1+e)/(1-e)",
+      "(1+2e)/(1-2e)",
+      "(1-2e)/(1+2e)"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "A sphere impinges directly on an equal sphere at rest. If the coefficient of restitution is e, then the ratio of their velocities after the impact is",
+    "options": [
+      "e₁:2e₂",
+      "e₁:e₂",
+      "1-e : 1+e",
+      "None of these"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "The resultant of two forces P newton and 3 newton is 7 newton. If the direction of the 3 newton force is reversed, then the resultant force becomes √19 newton. The value of the force P is",
+    "options": [
+      "5N",
+      "6N",
+      "3N",
+      "4N"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "If POB is a diameter of a circle and points P, A, B and Q are on the circle. If angle ABP = 60°, then ∠BQA will be",
+    "options": [
+      "60°",
+      "45°",
+      "30°",
+      "15°"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "A motor car weighing 10 quintals is moving at a speed of 12 m/s. Brakes are applied to stop it at a distance of 18 meters. The resistance of the work done by the force is-",
+    "options": [
+      "7347 kg m",
+      "7357 kg m",
+      "8347 kg m",
+      "इनमें से कोई नहीं (None of these)"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "A body of mass 2 kilograms is thrown vertically upwards with a velocity of 1000 cm/s. What will be its kinetic energy after 1 second?",
+    "options": [
+      "36000 erg",
+      "361000 erg",
+      "360010 erg",
+      "इनमें से कोई नहीं (None of these)"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "A train starts from a station A with uniform acceleration $f_1$ for some distance, then it moves with uniform retardation $f_2$ for a certain distance to stop at station B. The distance between stations A and B is 4km and it takes 4 minutes to cover this distance. If $f_1$ and $f_2$ are in km/minute², then 1/f₁ + 1/f₂ =",
+    "options": [
+      "4",
+      "2",
+      "3",
+      "इनमें से कोई नहीं (None of these)"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "A second identical sphere collides with a stationary sphere. If the velocity of separation after the collision (or coefficient of restitution) is e, then what will be the ratio of the velocities of the two spheres after the collision?",
+    "options": [
+      "e₁:2e₂",
+      "e₁:e₂",
+      "1-e:1+e",
+      "None of these"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "If a particle is projected vertically upwards and it reaches a height h after time t. After taking a further time t', it comes back to the ground, then h =",
+    "options": [
+      "(1/2)gtt'",
+      "(1/2)gtt'",
+      "(1/3)gtt'",
+      "(1/4)gtt'"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "The equation of motion of the particle moving along a straight line is x = (1/2)vt; where x is the distance. and v is the velocity of the particle at any instant 't'. Then the acceleration of the particle is",
+    "options": [
+      "proportional to distance",
+      "proportional to the square of the distance",
+      "constant",
+      "inversely proportional to the square of the distance and directed towards the origin"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "If the greatest and the least resultants of two forces are P and Q respectively, then the resultant of these forces, when acting at right angles, will be:",
+    "options": [
+      "(P²-Q²)/2",
+      "(P-Q)/2",
+      "(P+Q)/2",
+      "$\\sqrt{(P^2+Q^2)/2}$"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "ABC is a uniform triangular lamina with centre of gravity G. If the portion GBC is removed, the centre of gravity of the remaining portion is at G'. then GG' is equal to:",
+    "options": [
+      "(1/3)AG",
+      "(1/4)AG",
+      "(1/5)AG",
+      "(1/6)AG"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "The particles A and B are dropped from the heights of 5m and 20m respectively. Then the ratio of time taken by A to that taken by B, to reach the ground is:",
+    "options": [
+      "1:4",
+      "2:1",
+      "1:2",
+      "1:1"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "AB is the vertical diameter of a circle in a vertical plane. Another diameter CD makes an angle of 60° with AB then the ratio of the time taken by particle of slide along AB to the time taken by it to slide along CD is",
+    "options": [
+      "1:1",
+      "√2:1",
+      "1:√2",
+      "3²:2²"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "A man weighting 60kg jumps off a railway train running on horizontal rails at 20km/h with a packet weighing 10kg in his hand. The thrust of the packet on his hand is",
+    "options": [
+      "0",
+      "10 kg wt",
+      "50 kg wt",
+      "70 kg wt"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "If each force $\\vec{F_1}+\\vec{F_2}$ and $\\vec{F_1}-\\vec{F_2}$ has magnitude $\\sqrt{F_1^2+F_2^2}$ then the angle between $\\vec{F_1}$ and $\\vec{F_2}$ is",
+    "options": [
+      "90°",
+      "60°",
+      "45°",
+      "0°"
+    ],
+    "answer": 0
+  }
+]
+  </script>
+
+  <script>
+    // Load questions from the JSON block
+    const dataEl = document.getElementById('data');
+    const QUESTIONS = JSON.parse(dataEl.textContent);
+
+    // Elements
+    const subHead = document.getElementById('subHead');
+    const mainPanel = document.getElementById('mainPanel');
+    const resultPanel = document.getElementById('resultPanel');
+    const qNumberEl = document.getElementById('qNumber');
+    const qTextEl = document.getElementById('qText');
+    const choicesListEl = document.getElementById('choicesList');
+    const feedbackEl = document.getElementById('feedback');
+    const noteEl = document.getElementById('note');
+    const backBtn = document.getElementById('backBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const checkBtn = document.getElementById('checkBtn');
+    const progressTextEl = document.getElementById('progressText');
+    const progressBarEl = document.getElementById('progressBar');
+    const scoreBadgeEl = document.getElementById('scoreBadge');
+    const scoreCountEl = document.getElementById('scoreCount');
+    const statCorrectEl = document.getElementById('statCorrect');
+    const statIncorrectEl = document.getElementById('statIncorrect');
+    const statUnansweredEl = document.getElementById('statUnanswered');
+    const statAttemptedEl = document.getElementById('statAttempted');
+    const reviewBtn = document.getElementById('reviewBtn');
+    const restartBtn = document.getElementById('restartBtn');
+
+    // State
+    let currentIndex = 0;
+    const userAnswers = new Array(QUESTIONS.length).fill(null);
+    const graded = new Array(QUESTIONS.length).fill(false);
+
+    function letterForIndex(i) { return ['a','b','c','d','e'][i] || '?'; }
+
+    function updateHeader() {
+      if (QUESTIONS.length > 0) {
+        subHead.textContent = `${QUESTIONS.length} questions • One-by-one navigation • Immediate feedback • Math rendering (MathJax)`;
+      } else {
+        subHead.textContent = 'No questions found.';
+      }
+    }
+
+    function updateProgress() {
+      const total = Math.max(1, QUESTIONS.length);
+      progressTextEl.textContent = `Question ${currentIndex + 1} of ${total}`;
+      const pct = ((currentIndex) / (total - 1)) * 100;
+      progressBarEl.style.width = `${pct}%`;
+    }
+
+    function renderQuestion(index) {
+      const q = QUESTIONS[index];
+      qNumberEl.textContent = `Q${index + 1}`;
+      qTextEl.textContent = q.q;
+
+      choicesListEl.innerHTML = '';
+      feedbackEl.textContent = '';
+      feedbackEl.className = 'feedback';
+      noteEl.textContent = '';
+
+      q.options.forEach((optText, i) => {
+        const li = document.createElement('li');
+        li.dataset.index = String(i);
+
+        const label = document.createElement('label');
+        label.className = 'choice-label';
+
+        const bubble = document.createElement('span');
+        bubble.className = 'choice-letter';
+        bubble.textContent = letterForIndex(i).toUpperCase();
+
+        const span = document.createElement('span');
+        span.className = 'choice-text';
+        span.textContent = optText;
+
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.name = 'choice';
+        input.value = String(i);
+        input.id = `q${index}_opt${i}`;
+        label.setAttribute('for', input.id);
+
+        label.appendChild(bubble);
+        label.appendChild(span);
+        li.appendChild(input);
+        li.appendChild(label);
+        choicesListEl.appendChild(li);
+      });
+
+      if (userAnswers[index] !== null) {
+        const sel = choicesListEl.querySelector(`input[value="${userAnswers[index]}"]`);
+        if (sel) sel.checked = true;
+      }
+
+      if (graded[index]) {
+        applyGradingColors(index);
+        const correctLetter = letterForIndex(QUESTIONS[index].answer).toUpperCase();
+        if (userAnswers[index] === QUESTIONS[index].answer) {
+          feedbackEl.textContent = `Correct ✔`;
+          feedbackEl.classList.add('ok');
+        } else if (userAnswers[index] !== null) {
+          feedbackEl.textContent = `Incorrect ✘ — Correct answer: (${correctLetter})`;
+          feedbackEl.classList.add('bad');
+        } else {
+          feedbackEl.textContent = `Unanswered — Correct answer: (${correctLetter})`;
+          feedbackEl.classList.add('bad');
+        }
+      }
+
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        MathJax.typesetPromise([qTextEl, choicesListEl]).catch(() => {});
+      }
+
+      backBtn.disabled = index === 0;
+      nextBtn.textContent = index === QUESTIONS.length - 1 ? 'Finish 🎉' : 'Next →';
+      updateProgress();
+    }
+
+    function applyGradingColors(index) {
+      const q = QUESTIONS[index];
+      const items = choicesListEl.querySelectorAll('li');
+      items.forEach(li => li.classList.remove('correct', 'incorrect'));
+      if (userAnswers[index] !== null && userAnswers[index] !== q.answer) {
+        const wrong = choicesListEl.querySelector(`li[data-index="${userAnswers[index]}"]`);
+        if (wrong) wrong.classList.add('incorrect');
+      }
+      const right = choicesListEl.querySelector(`li[data-index="${q.answer}"]`);
+      if (right) right.classList.add('correct');
+    }
+
+    function checkCurrent() {
+      const q = QUESTIONS[currentIndex];
+      const selected = choicesListEl.querySelector('input[type="radio"]:checked');
+      userAnswers[currentIndex] = selected ? parseInt(selected.value, 10) : null;
+      graded[currentIndex] = true;
+
+      applyGradingColors(currentIndex);
+
+      const correctLetter = letterForIndex(q.answer).toUpperCase();
+      if (userAnswers[currentIndex] === q.answer) {
+        feedbackEl.textContent = `Correct ✔`;
+        feedbackEl.className = 'feedback ok';
+      } else if (userAnswers[currentIndex] === null) {
+        feedbackEl.textContent = `Unanswered — Correct answer: (${correctLetter})`;
+        feedbackEl.className = 'feedback bad';
+      } else {
+        feedbackEl.textContent = `Incorrect ✘ — Correct answer: (${correctLetter})`;
+        feedbackEl.className = 'feedback bad';
+      }
+
+      const answered = userAnswers.filter(v => v !== null).length;
+      const correctSoFar = userAnswers.reduce((acc, v, i) => acc + ((v !== null && v === QUESTIONS[i].answer) ? 1 : 0), 0);
+      noteEl.textContent = `Answered: ${answered}/${QUESTIONS.length} • Correct so far: ${correctSoFar}`;
+    }
+
+    function go(delta) {
+      const newIndex = currentIndex + delta;
+      if (newIndex < 0 || newIndex >= QUESTIONS.length) return;
+      currentIndex = newIndex;
+      renderQuestion(currentIndex);
+    }
+
+    function computeScore() {
+      const total = QUESTIONS.length;
+      let attempted = 0, correct = 0;
+      for (let i = 0; i < total; i++) {
+        const ua = userAnswers[i];
+        if (ua !== null) {
+          attempted++;
+          if (ua === QUESTIONS[i].answer) correct++;
+        }
+      }
+      const incorrect = attempted - correct;
+      const unanswered = total - attempted;
+      const percent = Math.round((correct / total) * 100);
+      return { total, attempted, correct, incorrect, unanswered, percent };
+    }
+
+    function showResults() {
+      const { total, attempted, correct, incorrect, unanswered, percent } = computeScore();
+      scoreBadgeEl.textContent = `${percent}%`;
+      scoreCountEl.textContent = `${correct}/${total}`;
+      statCorrectEl.textContent = String(correct);
+      statIncorrectEl.textContent = String(incorrect);
+      statUnansweredEl.textContent = String(unanswered);
+      statAttemptedEl.textContent = String(attempted);
+      progressTextEl.textContent = `Completed • ${correct}/${total} correct (${percent}%)`;
+      progressBarEl.style.width = '100%';
+      mainPanel.style.display = 'none';
+      resultPanel.style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function finishQuiz() {
+      graded.fill(true);
+      showResults();
+    }
+
+    function restartQuiz() {
+      for (let i = 0; i < userAnswers.length; i++) userAnswers[i] = null;
+      graded.fill(false);
+      currentIndex = 0;
+      resultPanel.style.display = 'none';
+      mainPanel.style.display = 'block';
+      progressTextEl.textContent = `Question 1 of ${QUESTIONS.length}`;
+      progressBarEl.style.width = '0%';
+      renderQuestion(currentIndex);
+    }
+
+    // Events
+    backBtn.addEventListener('click', () => go(-1));
+    nextBtn.addEventListener('click', () => {
+      if (currentIndex === QUESTIONS.length - 1) finishQuiz();
+      else go(1);
+    });
+    checkBtn.addEventListener('click', checkCurrent);
+    reviewBtn.addEventListener('click', () => { resultPanel.style.display = 'none'; mainPanel.style.display = 'block'; currentIndex = 0; renderQuestion(currentIndex); });
+    restartBtn.addEventListener('click', restartQuiz);
+    window.addEventListener('keydown', (e) => {
+      if (resultPanel.style.display === 'block') return;
+      if (e.key === 'ArrowLeft') go(-1);
+      if (e.key === 'ArrowRight') { if (currentIndex === QUESTIONS.length - 1) finishQuiz(); else go(1); }
+      if (e.key === 'Enter') { e.preventDefault(); checkCurrent(); }
+    });
+choicesListEl.addEventListener('change', (e) => {
+if (e.target && e.target.name === 'choice') {
+// Mark this question as graded and show feedback immediately
+graded[currentIndex] = true;
+checkCurrent(); // instantly colors options + updates note/feedback
+      }
+    });
+
+    // Start
+    updateHeader();
+    if (QUESTIONS.length > 0) renderQuestion(currentIndex);
+  </script>
+</body>
+</html>
